@@ -1,4 +1,4 @@
-import { AppBar, Box, Container, createTheme, CssBaseline, Switch, ThemeProvider, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Container, createTheme, CssBaseline, Switch, ThemeProvider, Toolbar, Typography, Badge } from "@mui/material";
 import Head from "next/head";
 import React, { useContext } from "react";
 import classes from "@/utils/classes";
@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 
 export default function Layout({ title, children }) {
   const { state, dispatch } = useContext(Store);
-  const { darkMode } = state;
+  const { darkMode, cart } = state;
   const theme = createTheme({
     typography: {
       h1: {
@@ -55,7 +55,15 @@ export default function Layout({ title, children }) {
 
             <div className={classes.grow}>
               <Switch checked={darkMode} onChange={darkModeChangeHandler}></Switch>
-              <Link href="/cart">Cart</Link>
+              <Link href="/cart">
+                {cart.cartItems.length > 0 ? (
+                  <Badge color="secondary" badgeContent={cart.cartItems.length}>
+                    Cart
+                  </Badge>
+                ) : (
+                  "Cart"
+                )}
+              </Link>
               <Link href="/login">Login</Link>
             </div>
           </Toolbar>
