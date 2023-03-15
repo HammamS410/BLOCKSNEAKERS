@@ -1,9 +1,11 @@
-import data from "@/utils/data";
+import Product from "@/models/Product";
+import db from "@/utils/db";
 import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Typography } from "@mui/material";
 import Link from "next/link";
 import Layout from "./components/Layout";
 
-export default function Home() {
+export default function Home(props) {
+  const { products } = props;
   return (
     <>
       <Layout>
@@ -14,7 +16,7 @@ export default function Home() {
             </Typography>
           </h1>
           <Grid container spacing={3}>
-            {data.products.map((product) => (
+            {products.map((product) => (
               <Grid item md={4} key={product.name}>
                 <Card>
                   <Link href={`/product/${product.slug}`}>
@@ -39,4 +41,15 @@ export default function Home() {
       </Layout>
     </>
   );
+}
+
+export async function getServerSideProps() {
+  await db.connect();
+  const products = await Product.find({}).lean();
+  await db.disconnect();
+  return {
+    props: {
+      products: products.map(db.convertDocToObj),
+    },
+  };
 }
